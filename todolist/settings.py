@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'HOST': env('POSTGRES_HOST', default='127.0.0.1'),
         'PORT': '5432',
     }
 }
