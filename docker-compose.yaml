@@ -1,11 +1,11 @@
-version: '3.9'
+version: '3.8'
 
 services:
   front:
     image: sermalenk/skypro-front:lesson-34
     restart: always
     ports:
-     - "8080:80"
+     - 8080:80
     depends_on:
       api:
         condition: service_started
@@ -18,35 +18,40 @@ services:
     restart: always
     env_file: .env
     environment:
-        POSTGRES_HOST: postgres
+        DB_HOST: postgres
     depends_on:
       postgres:
         condition: service_healthy
       migrations:
-        condition: service_started
+        condition: service_completed_successfully
     volumes:
-        - ./todolist:/app
+        - ./todolist:/app/todolist
+
   migrations:
     build:
       context: .
     environment:
-      POSTGRES_HOST: postgres
+      DB_HOST: postgres
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-        - ./todolist:/app
     command: python manage.py migrate
+
   postgres:
     image: postgres:12.4-alpine
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 15
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data -700
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+    postgres_data:
