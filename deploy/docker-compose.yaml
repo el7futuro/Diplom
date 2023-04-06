@@ -1,6 +1,40 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:12.4
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  migrations:
+    image: el7futuro/todolist:latest
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: python manage.py migrate
+  api:
+    image: el7futuro/todolist:latest
+    restart: always
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
   front:
     image: sermalenk/skypro-front:lesson-34
     restart: always
@@ -10,42 +44,9 @@ services:
       api:
         condition: service_started
 
-  api:
-    image: el7futuro/todolist:latest
-    restart: always
-    env_file: .env
-    environment:
-        DB_HOST: postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
-      migrations:
-        condition: service_completed_successfully
 
 
-  migrations:
-    build:
-      context: .
-    environment:
-      DB_HOST: postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: python manage.py migrate
 
-  postgres:
-    image: postgres:12.4
-    environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 5s
-      timeout: 5s
-      retries: 15
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
 
 volumes:
