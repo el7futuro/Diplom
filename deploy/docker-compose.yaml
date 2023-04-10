@@ -16,7 +16,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
   migrations:
     image: el7futuro/todolist:latest
-    env_file: .env
     environment:
       DB_HOST: postgres
       SECRET_KEY: ${SECRET_KEY}
