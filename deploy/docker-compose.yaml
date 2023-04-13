@@ -16,9 +16,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
   migrations:
     image: el7futuro/todolist:latest
-    environment:
-      DB_HOST: postgres
-      SECRET_KEY: ${SECRET_KEY}
+    env_file: .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -26,9 +24,7 @@ services:
   api:
     image: el7futuro/todolist:latest
     restart: always
-    env_file: .env
-    environment:
-      DB_HOST: postgres
+
     depends_on:
       postgres:
         condition: service_healthy
