@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from core.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -33,7 +33,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         Сохранение пользователя в БД
         """
         validated_data['password'] = make_password(validated_data['password'])
-        user = User(
+        user = User.objects.create_user(
             username=validated_data['username'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],

@@ -17,11 +17,10 @@ services:
     ports:
       - "5432:5432"
   migrations:
-    build:
-      context: .
+    build: .
+    env_file: .env
     environment:
       DB_HOST: postgres
-      SECRET_KEY: ${SECRET_KEY}
     depends_on:
       postgres:
         condition: service_healthy
