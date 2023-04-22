@@ -7,6 +7,4 @@ class PasswordField(CharField):
         kwargs['style'] = {'input_type': 'password'}
         kwargs['write_only'] = True
         super().__init__(**kwargs)
-
-    def validate(self, value):
-        validate_password(value)
+        self.validators.append(validate_password)

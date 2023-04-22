@@ -16,13 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import path, include
-
-
 from core.views import SignUpView, LoginView, ProfileView, UpdatePasswordView
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="todolist",
+        default_version='v1',
+        description="API"
+    ))
+
+
 app_name = 'core'
 
 core_patterns = ([
-                     path('signup/', SignUpView.as_view(), name='signup'),
+                     path('signup', SignUpView.as_view(), name='signup'),
                      path('login', LoginView.as_view(), name='login'),
                      path('profile', ProfileView.as_view(), name='profile'),
                      path('update_password', UpdatePasswordView.as_view(), name='update_password'),
