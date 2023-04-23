@@ -4,7 +4,8 @@ from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 
 from core.models import User
-from core.serializers import LoginSerializer, UserSerializer, CreateUserSerializer, UpdatePasswordSerializer
+from core.serializers import LoginSerializer, CreateUserSerializer, UpdatePasswordSerializer, \
+    ProfileSerializer
 
 
 class SignUpView(generics.CreateAPIView):
@@ -34,13 +35,13 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
     View для получения, обновления данных пользователя и логаута
     """
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+    serializer_class = ProfileSerializer
+    # queryset = User.objects.all()
 
     def get_object(self):
         return self.request.user
 
-    def perform_destroy(self, request, *args, **kwargs):
+    def perform_destroy(self, instance: User):
         logout(self.request)
 
 

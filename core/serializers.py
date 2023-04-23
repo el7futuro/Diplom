@@ -32,7 +32,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         Сохранение пользователя в БД
         """
         validated_data['password'] = make_password(validated_data['password'])
-        user = User.objects.create_user(
+        user = User(
             username=validated_data['username'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
@@ -52,6 +52,7 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "first_name", "last_name", "email", "password")
+        read_only_fields = ("id", "first_name", "last_name", "email")
 
     def create(self, validated_data: dict) -> User:
         user = authenticate(
@@ -63,7 +64,7 @@ class LoginSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     """
     Сериалайзер для отображения данных пользователя
     """
