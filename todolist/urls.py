@@ -17,15 +17,6 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import path, include
 from core.views import SignUpView, LoginView, ProfileView, UpdatePasswordView
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="todolist",
-        default_version='v1',
-        description="API"
-    ))
 
 
 app_name = 'core'
@@ -40,6 +31,7 @@ core_patterns = ([
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/', include(core_patterns)),
+    path('oauth/', include('social_django.urls', namespace="social")),
 
 ]
 

@@ -40,7 +40,7 @@ services:
     volumes:
       - ./todolist:/app/todolist
   front:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-35
     restart: always
     ports:
      - 8080:80
