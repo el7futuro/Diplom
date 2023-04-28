@@ -26,7 +26,7 @@ if ENV_FILE.exists():
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", default=False)
+DEBUG = env("DEBUG", default=True)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -106,6 +106,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -131,17 +141,14 @@ AUTH_USER_MODEL = 'core.User'
 
 # VK
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_JSONFIELD_CUSTOM = 'django.db.models.JSONField'
-SOCIAL_AUTH_VK_OAUTH2_KEY = env.str('VK_OAUTH_ID')
-SOCIAL_AUTH_VK_OAUTH2_SECRET = env.str('VK_OAUTH_SECRET_KEY')
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+SOCIAL_AUTH_VK_OAUTH2_KEY = env('SOCIAL_AUTH_VK_OAUTH2_KEY')
+SOCIAL_AUTH_VK_OAUTH2_SECRET = env('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
-SOCIAL_AUTH_VK_EXTRA_DATA = [
-    ('email', 'email'),
-]
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/categories'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/auth'
+
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.vk.VKOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.vk.VKOAuth2',  # backend authorization via VK
+    'django.contrib.auth.backends.ModelBackend',  # default backend authorization via login & password
 )
